@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Potato Farm — Pixel Fields</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <meta name="theme-color" content="#63a5ff" />
+</head>
+<body>
+  <!-- SKY + LANDSCAPE -->
+  <div id="scene" class="scene">
+    <div class="sky">
+      <div class="sun" aria-hidden="true"></div>
+      <div class="cloud c1" aria-hidden="true"></div>
+      <div class="cloud c2" aria-hidden="true"></div>
+      <div class="cloud c3" aria-hidden="true"></div>
+      <div class="weatherFx" id="weatherFx" aria-hidden="true"></div>
+    </div>
+
+    <div class="hills" aria-hidden="true"></div>
+    <div class="grass" aria-hidden="true"></div>
+
+    <!-- UI HUD -->
+    <header class="hud">
+      <div class="brand">
+        <div class="logo">🥔</div>
+        <div class="title">
+          <div class="name">Potato Farm</div>
+          <div class="sub" id="dayLabel">Day 1</div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="k">Coins</div>
+          <div class="v" id="coins">0</div>
+        </div>
+        <div class="stat">
+          <div class="k">Seeds</div>
+          <div class="v" id="seeds">0</div>
+        </div>
+        <div class="stat">
+          <div class="k">Potatoes</div>
+          <div class="v" id="potatoes">0</div>
+        </div>
+        <div class="stat wide">
+          <div class="k">Market</div>
+          <div class="v"><span id="marketPrice">2</span> <span class="mini">coins / potato</span></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main">
+      <section class="panel left">
+        <div class="panelHead">
+          <h2>Field</h2>
+          <div class="pill" id="weatherPill">Weather: Sunny</div>
+        </div>
+
+        <div class="fieldWrap">
+          <div id="field" class="field" role="grid" aria-label="Potato field"></div>
+          <div id="animals" class="animals" aria-hidden="true"></div>
+        </div>
+
+        <div class="actions">
+          <button id="plantAll" class="btn primary">Plant All</button>
+          <button id="harvestAll" class="btn">Harvest All</button>
+          <button id="sellAll" class="btn money">Sell All</button>
+        </div>
+
+        <div class="hintBar">
+          <div class="hint" id="hintText">Tap an empty plot to plant. Tap a ready plot to harvest.</div>
+        </div>
+      </section>
+
+      <section class="panel right">
+        <div class="tabs" role="tablist" aria-label="Game panels">
+          <button class="tab active" data-tab="store" role="tab" aria-selected="true">Store</button>
+          <button class="tab" data-tab="quests" role="tab">Daily Quests</button>
+          <button class="tab" data-tab="market" role="tab">Market</button>
+          <button class="tab" data-tab="help" role="tab">Help</button>
+        </div>
+
+        <div class="tabBody">
+          <!-- STORE -->
+          <div class="tabPanel active" id="tab-store" role="tabpanel">
+            <div class="card">
+              <div class="cardTitle">Seeds</div>
+              <div class="cardRow">
+                <div class="cardDesc">Seeds cost <b>1</b> coin each. You need seeds to plant plots.</div>
+                <button id="buySeed1" class="btn small">Buy 1 (1)</button>
+                <button id="buySeed10" class="btn small">Buy 10 (10)</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="cardTitle">Upgrades</div>
+              <div class="storeGrid" id="storeGrid"></div>
+              <div class="muted smallNote">Upgrades persist. Prices scale slightly.</div>
+            </div>
+          </div>
+
+          <!-- QUESTS -->
+          <div class="tabPanel" id="tab-quests" role="tabpanel">
+            <div class="card">
+              <div class="cardTitle">Today’s Quests</div>
+              <div id="questList" class="list"></div>
+              <div class="muted smallNote">Quests reset daily (based on your device date).</div>
+            </div>
+          </div>
+
+          <!-- MARKET -->
+          <div class="tabPanel" id="tab-market" role="tabpanel">
+            <div class="card">
+              <div class="cardTitle">Sell Potatoes</div>
+              <div class="cardDesc">
+                Your current price is <b><span id="marketPrice2">2</span></b> coins per potato.
+                Prices change every day and are affected by weather.
+              </div>
+              <div class="actions compact">
+                <button id="sell10" class="btn money small">Sell 10</button>
+                <button id="sell50" class="btn money small">Sell 50</button>
+                <button id="sellAll2" class="btn money small">Sell All</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="cardTitle">Market Trend</div>
+              <div class="sparkWrap">
+                <canvas id="spark" width="420" height="100" aria-label="Market trend chart"></canvas>
+              </div>
+              <div class="muted smallNote">Trend is a lightweight visual hint, not exact history.</div>
+            </div>
+          </div>
+
+          <!-- HELP -->
+          <div class="tabPanel" id="tab-help" role="tabpanel">
+            <div class="card">
+              <div class="cardTitle">How to play</div>
+              <ul class="bullets">
+                <li><b>Plant</b> empty plots (costs 1 seed).</li>
+                <li><b>Harvest</b> ready plots (adds potatoes to inventory).</li>
+                <li><b>Sell</b> potatoes at the market for coins.</li>
+                <li>Buy seeds and upgrades in the store.</li>
+                <li>Complete daily quests for extra rewards.</li>
+              </ul>
+              <div class="actions compact">
+                <button id="openTutorial" class="btn small primary">Replay Tutorial</button>
+                <button id="saveNow" class="btn small">Save</button>
+                <button id="reset" class="btn small danger">Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Tutorial overlay -->
+    <div id="tutorial" class="tutorial hidden" role="dialog" aria-modal="true" aria-label="Tutorial">
+      <div class="tutorialCard">
+        <div class="tutorialTop">
+          <div class="tutorialTitle" id="tutorialTitle">Welcome to Potato Farm</div>
+          <button id="tutorialClose" class="x" aria-label="Close tutorial">✕</button>
+        </div>
+        <div class="tutorialBody" id="tutorialBody"></div>
+        <div class="tutorialBottom">
+          <div class="tutorialDots" id="tutorialDots" aria-hidden="true"></div>
+          <div class="tutorialBtns">
+            <button id="tutorialBack" class="btn small">Back</button>
+            <button id="tutorialNext" class="btn small primary">Next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
